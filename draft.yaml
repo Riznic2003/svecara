@@ -1,0 +1,77 @@
+models:
+  Category:
+    name: string unique
+    description: text nullable
+    relationships:
+      hasMany: Product
+
+  Product:
+    category_id: id foreign
+    name: string
+    description: text nullable
+    price: decimal:10,2
+    unit: string:20
+    sku: string:100 nullable unique
+    min_stock: integer default:0
+    relationships:
+      belongsTo: Category
+      hasOne: Stock
+      hasMany: OrderItem
+
+  Stock:
+    product_id: id foreign unique
+    location: string:100 nullable
+    quantity: integer default:0
+    relationships:
+      belongsTo: Product
+
+  Order:
+    user_id: id nullable
+    full_name: string
+    email: string
+    phone: string:50
+    address: string:500
+    payment_method: string:50
+    status: enum:primljena,u_pripremi,isporučena,otkazana default:primljena
+    total: decimal:10,2
+    relationships:
+      hasMany: OrderItem
+      hasOne: Payment
+      belongsTo: User
+
+  OrderItem:
+    order_id: id foreign
+    product_id: id foreign
+    qty: integer
+    unit_price: decimal:10,2
+    relationships:
+      belongsTo: Order, Product
+
+  Payment:
+    order_id: id foreign unique
+    amount: decimal:10,2
+    status: string:50
+    reference: string:255 nullable
+    provider: string:50 nullable
+    paid_at: timestamp nullable
+    relationships:
+      belongsTo: Order
+
+controllers:
+  Category:
+    resource: index,create,store,edit,update,destroy
+  Product:
+    resource: index,create,store,edit,update,destroy
+  Order:
+    resource: index,show
+  Shop:
+    index:
+      query: Product with:category order:name paginate:12
+    addToCart:
+      validate: qty integer min:1 max:100
+    cart:
+    updateCart:
+    removeFromCart:
+    checkoutForm:
+    checkoutStore:
+    thankYou:
