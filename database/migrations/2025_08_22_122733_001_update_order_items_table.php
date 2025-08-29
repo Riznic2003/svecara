@@ -19,6 +19,8 @@ return new class extends Migration {
                 ->on('orders')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+
+            
         });
     }
 

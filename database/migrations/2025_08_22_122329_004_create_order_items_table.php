@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->integer('qty')->default(1);
 
             $table->decimal('unit_price');
+
+            $table->timestamps();
         });
     }
 
